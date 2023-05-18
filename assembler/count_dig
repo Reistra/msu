@@ -1,0 +1,36 @@
+%include "io.inc"
+    
+section .text
+
+count_dig:
+    push ebp
+    mov ebp, esp
+    mov eax, dword [ebp + 8]
+        push esi
+        push edi
+    mov esi, 10     ; esi = del
+    mov edi, 1    ; edi - counter
+.CYCLE:
+    cdq
+    div esi
+    cmp eax, 0
+    je .FIN
+    inc edi
+    jmp .CYCLE
+.FIN:
+    mov eax, edi
+       pop esi
+       pop edi
+    
+    leave
+    ret
+    
+global CMAIN
+CMAIN:
+    GET_DEC 4, eax
+    push eax
+    call count_dig
+    add esp, 4
+    PRINT_DEC 4, eax
+    xor eax, eax
+    ret
