@@ -1,0 +1,56 @@
+#include <stdio.h>
+#define N 100
+
+void push (int st[], int *top, int elem) {
+    st [(*top)++] = elem;
+}
+
+int pop (int st[], int *top) {
+    return st [--(*top)];
+}
+
+
+int doit (int a, int b, int c) {  //бинарная операция &, |
+    switch (c)
+    {
+        case '&': return (a & b); break;
+        case '|': return (a | b); break;
+    }
+}
+
+int main () {
+    int elem, c; int st[N]; int top = 0; 
+    while ((c = getchar()) != '\n' && c != EOF) {       //считываем до конца 
+        if (c == 't' || c == 'f') {     //проверка на операнд, true или false
+            int k = 0;
+            for ( ; (c = getchar()) != ' ' && c != '\n';)  
+                k += 1;
+            switch (k) 
+            {
+            case 4: push (st, &top, 0);  break;   //4 - f alse
+            case 3: push (st, &top, 1);  break;    //3 - t rue
+            }
+
+        }
+
+        else if (c == '&' || c == '|') {    //проверка на операцию & |
+            int a = pop(st, &top);
+            int b = pop(st, &top);
+            elem = doit (a, b, c); 
+            push (st, &top, elem);
+        }
+
+        else if (c == '~') {     //проверка на операцию ~
+            elem = pop (st, &top);
+            push (st, &top, !elem);    
+
+        }
+    }
+switch (pop(st, &top))
+{
+    case 1: printf ("true\n"); break;
+    case 0: printf ("false\n"); break;
+}
+
+return 0;
+}
