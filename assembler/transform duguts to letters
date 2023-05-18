@@ -1,0 +1,54 @@
+%include "io.inc"
+section .bss
+    a resd 7
+
+section .text
+
+rule_one:
+    push ebp
+    mov ebp, esp
+        push edi
+        push ebx
+        push esi
+    mov edx, dword[ebp + 12]        ; edx = N
+    mov ebx, dword[ebp + 8]         ; ebx = string adress
+    xor ecx, ecx                    ; ecx = i, ecx = 0.
+    .CYCLE:
+        cmp ecx, edx                ; i = N? if this the end of str
+        je .FIN
+        mov al,  byte[ebx + ecx]
+        cmp al, '0'     ; check if (str[i] >='0' && str[i] <= '9')        
+        jb .T
+        cmp al, '9'
+        ja .T
+        add al, '0'     ; 1 -> 'a', 2 -> 'b', ... , 9 -> 'j'
+        PRINT_STRING 'al = '
+        PRINT_CHAR al
+        
+        mov byte[ebx + ecx], al
+        .T:
+        inc ecx
+        jmp .CYCLE
+    .FIN:
+        pop ebx
+    leave
+    ret
+
+global CMAIN
+CMAIN:
+    xor edx, edx
+    .INPUT:
+        cmp edx, 7
+        je .NEXT
+        GET_CHAR eax
+        mov dword[a + edx*4], eax
+        inc edx
+        jmp .INPUT
+    .NEXT:
+    push edx
+    push a
+    call rule_one
+    add esp, 8
+    
+    xor eax, eax
+    ret
