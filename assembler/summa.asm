@@ -52,13 +52,13 @@ main:
         inc edx
         jmp INPUT_B
     NEXT:
-        push edx
+        push edx            ; edx = N
         mov ebx, c
-        push ebx
+        push ebx            ; ebx = c = &c[0]
         mov ebx, b
-        push ebx
+        push ebx            ; ebx = b = &b[0]
         mov ebx, a
-        push ebx
+        push ebx            ; ebx = a = &a[0]
         call sum
         add esp, 16
     xor eax, eax
