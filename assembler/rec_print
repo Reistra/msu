@@ -1,0 +1,37 @@
+;написать рекурсивную функцию, которая выводит маленькие буквы в порядке следования, а все остальные символы выводит в обратном порядке
+
+%include "io.inc"
+
+section .text
+p:
+    push ebp
+    mov ebp, esp
+    .CYCLE:
+        GET_CHAR al
+        cmp al, '.'
+        je .EXIT
+        
+        cmp al, 'a'
+            jb .REC2        ; al < 'a'
+        cmp al, 'z'
+            ja .REC2        ; al > 'z'
+            
+        PRINT_CHAR al
+        call p
+        jmp .CYCLE
+        .REC2:
+            push eax
+            call p
+            pop eax
+            PRINT_CHAR al
+            jmp .CYCLE
+        
+    .EXIT:
+    leave 
+    ret
+
+global CMAIN
+CMAIN:
+    call p
+    xor eax, eax
+    ret

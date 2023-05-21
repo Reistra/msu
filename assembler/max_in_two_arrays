@@ -1,3 +1,5 @@
+;дано 2 массива, x[i] и y[i]. В x[i] запишите максимум из x[i] и y[i].
+
 %include "io.inc"
 
 section .bss
