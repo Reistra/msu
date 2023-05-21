@@ -1,0 +1,69 @@
+%include "io.inc"
+
+section .bss
+    N equ 10
+    x resd N
+    y resw N
+
+section .text
+maxxy:
+    push ebp
+    mov ebp, esp
+        push esi
+        push edi
+    mov ecx, dword[ebp + 16]        ; ecx = N
+    mov esi, dword[ebp + 12]        ; esi = y
+    mov edi, dword[ebp + 8]         ; edi = x
+    
+    .CYCLE:
+        movsx eax, word[esi + 2*ecx - 2]        ; eax = y[i]
+        cmp dword[edi + 4*ecx - 4], eax         ; x[i] \/ y[i]
+        jg .MAX_X                               ; x[i] > y[i]
+            mov dword[edi + 4*ecx - 4], eax     ; x[i] := y[i]
+        .MAX_X:
+            loop .CYCLE
+        pop edi
+        pop esi
+    leave
+    ret
+    
+global CMAIN
+CMAIN:
+    xor ecx, ecx
+    .INPUT_X:
+        cmp ecx, N
+        je .NEXT1
+        GET_DEC 4, eax
+        mov dword[x + ecx*4], eax
+        inc ecx
+        jmp .INPUT_X
+    .NEXT1:
+        xor ecx, ecx
+    .INPUT_Y:   
+        cmp ecx, N
+        je .NEXT2
+        GET_DEC 2, ax
+        mov word[y + ecx*2], ax
+        inc ecx
+        jmp .INPUT_Y
+    .NEXT2:
+        push ecx            ; запушили N
+        mov eax, y          
+        push eax            ; запушили указатель на начало массива y
+        mov eax, x
+        push eax            ; запушили указатель на начало массива x
+        call maxxy
+        add esp, 12
+     
+        xor ecx, ecx
+    .OUTPUT:
+        cmp ecx, N
+        je .EXIT
+        mov ebx, dword[x + ecx*4]
+        PRINT_DEC 4, ebx
+        PRINT_CHAR ' '
+        inc ecx
+        jmp .OUTPUT
+    .EXIT:
+    xor eax, eax
+    ret
